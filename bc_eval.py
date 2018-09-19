@@ -1,6 +1,9 @@
 import numpy as np
 import tensorflow as tf
- 
+
+import gym
+import custom_gym
+
 class Model:
     def __init__(self, state_dim, action_dim, restore_path=None):
         self.sess = tf.get_default_session()
@@ -43,38 +46,38 @@ class Model:
         })
         return loss, summary
 
-    def predict(self, s, a):
+    def predict(self, s):
         action = self.sess.run([self.a_pred], feed_dict={
             self.s: s
         })
         return action
 
 if __name__ == "__main__":
-    import pickle
-    with open("expert/python_env_expert.pickle", "rb") as file:
-        experts = pickle.load(file)
-    
-    states = np.array([np.array(expert["states"]) for expert in experts])
-    actions = np.array([np.array(expert["actions"]) for expert in experts])
-    states = np.concatenate(states, axis=0)
-    actions = np.concatenate(actions, axis=0)
+    env = gym.make("FiveTarget-v1")
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
 
     with tf.Session(config=config) as sess:
-        print(states.shape)
-        model = Model(states.shape[-1], actions.shape[-1])
+        # Setup
+        model = Model(9, 2)
         
-        writer = tf.summary.FileWriter("./logdir/almost_random/")
+        writer = tf.summary.FileWriter("./logdir")
         saver = tf.train.Saver([v for v in tf.global_variables() if "model" in v.name])
         
-        for i in range(10000):
-            loss, summary = model.train(states, actions)
-            
-            writer.add_summary(summary, i)
-            save_path = saver.save(sess, "./model/model.ckpt")
+        saver.restore(sess, "./model_random/model.ckpt")
 
-            print(loss)
-
+        # Evaluation
         
+        for i in range(1000):
+            
+            obs = env.reset()
+            done = False
+
+            while True:
+                env.render()
+                
+                action = model.predict([obs])
+                obs, r, done, _ = env.step(action[0][0])
+
+                if done:break
