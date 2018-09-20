@@ -31,9 +31,6 @@ class Model:
         ''' Summary '''
         self.summary = tf.summary.merge_all()
 
-        if restore_path is None:
-            self.sess.run(tf.global_variables_initializer())
-
     def train(self, batch_s, batch_a):
         ''' action should be normalized to [-1, 1]'''
         loss, summary, _ = self.sess.run(
@@ -68,7 +65,7 @@ if __name__ == "__main__":
         
         writer = tf.summary.FileWriter("./logdir/almost_random/")
         saver = tf.train.Saver([v for v in tf.global_variables() if "model" in v.name])
-        
+
         for i in range(10000):
             loss, summary = model.train(states, actions)
             
