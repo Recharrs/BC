@@ -64,7 +64,7 @@ def get_batch(data, batch_size, step):
 if __name__ == "__main__":
     batch_size = 1024
 
-    with open("logger_2.txt", "w+") as log:
+    with open("logger_3.txt", "w+") as log:
         with open("traj/state_action_pair.pickle", "rb") as file:
             data = pickle.load(file)
         
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         
                 # evaluation
                 dists = []
-                for _ in range(20):
+                for _ in range(300):
                     obs = env.reset()
                     done = False
                     while not done:               
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)))
                 print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)), file=log)
 
-    with open("logger_2.txt", "r") as file:
+    with open("logger_3.txt", "r") as file:
         lines = file.read().splitlines()
 
         data_size = []
@@ -117,10 +117,10 @@ if __name__ == "__main__":
         plt.ylabel("mean distance")
 
         plt.plot(data_size, dists)
-        plt.savefig("reacher-learning_curve.png")
+        plt.savefig("reacher_3-learning_curve.png")
         plt.show()
 
-        with open("logger_2_cooked.pickle", "wb") as file_out:
+        with open("logger_3_cooked.pickle", "wb") as file_out:
             data_out = {
                 "data_size": data_size,
                 "dists": dists,
