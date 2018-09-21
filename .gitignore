@@ -6,3 +6,11 @@ model
 model_ranom
 model_random
 env_no_face
+._reacher-learning_curve.png
+Dataset
+__pycache__
+logger_2.txt logger.txt
+logger_2_cooked.pickle
+traj
+reacher-learning_curve.png
+logger_2.txt logger.txt
