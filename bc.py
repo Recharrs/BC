@@ -1,6 +1,12 @@
 import numpy as np
 import tensorflow as tf
+import pickle
  
+import gym
+import custom_gym
+
+import matplotlib.pyplot as plt
+
 class Model:
     def __init__(self, state_dim, action_dim, restore_path=None):
         self.sess = tf.get_default_session()
@@ -40,38 +46,85 @@ class Model:
         })
         return loss, summary
 
-    def predict(self, s, a):
+    def predict(self, s):
         action = self.sess.run([self.a_pred], feed_dict={
             self.s: s
         })
         return action
 
-if __name__ == "__main__":
-    import pickle
-    with open("expert/python_env_expert.pickle", "rb") as file:
-        experts = pickle.load(file)
+def get_batch(data, batch_size, step):
+    num_batch = len(data) // batch_size
+    batch_idx = step % num_batch 
     
-    states = np.array([np.array(expert["states"]) for expert in experts])
-    actions = np.array([np.array(expert["actions"]) for expert in experts])
-    states = np.concatenate(states, axis=0)
-    actions = np.concatenate(actions, axis=0)
+    start = (batch_idx) * batch_size
+    end = (batch_idx + 1) * batch_size
 
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
+    return zip(*data[start:end])
 
-    with tf.Session(config=config) as sess:
-        print(states.shape)
-        model = Model(states.shape[-1], actions.shape[-1])
-        
-        writer = tf.summary.FileWriter("./logdir/almost_random/")
-        saver = tf.train.Saver([v for v in tf.global_variables() if "model" in v.name])
+if __name__ == "__main__":
+    batch_size = 1024
 
-        for i in range(10000):
-            loss, summary = model.train(states, actions)
+    with open("logger_2.txt", "w+") as log:
+        with open("expert/python_env_expert.pickle", "rb") as file:
+            experts = pickle.load(file)
+            states = np.concatenate(np.array([np.array(expert["states"]) for expert in experts]), axis=0)
+            actions = np.concatenate(np.array([np.array(expert["actions"]) for expert in experts]), axis=0)
+            data = list(zip(states, actions))
+    
+        env = gym.make("FiveTarget-v1")
+
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        with tf.Session(config=config) as sess:
+            model = Model(9, 2)
+            sess.run(tf.global_variables_initializer())
             
-            writer.add_summary(summary, i)
-            save_path = saver.save(sess, "./model/model.ckpt")
+            writer = tf.summary.FileWriter("./logdir/mass-point-test")
+            saver = tf.train.Saver([v for v in tf.global_variables() if "model" in v.name], max_to_keep=10)
 
-            print(loss)
+            for i in range(1000):
+                # train a batch
+                state, action = get_batch(data, batch_size, i)
+                loss, summary = model.train(states, actions)
+                
+                writer.add_summary(summary, i)
+                save_path = saver.save(sess, "./model/mass-point/model", global_step=i)
 
+                # evaluation
+                dists = []
+                for _ in range(20):
+                    obs = env.reset()
+                    done = False
+                    while not done:               
+                        action = model.predict([obs])
+                        obs, r, done, info = env.step(action[0][0])
+                        if done:
+                            dists.append(info["dist"])
+
+                print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)))
+                print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)), file=log)
+
+    with open("logger_2.txt", "r") as file:
+        lines = file.read().splitlines()
+
+        data_size = []
+        dists = []
+
+        for line in lines:
+            data = line.split(" ")
+            data_size.append(int(data[1]))
+            dists.append(float(data[4]))
         
+        plt.xlabel("# of data")
+        plt.ylabel("mean distance")
+
+        plt.plot(data_size, dists)
+        plt.savefig("mass_point-learning_curve.png")
+        plt.show()
+
+        with open("logger_2_cooked.pickle", "wb") as file_out:
+            data_out = {
+                "data_size": data_size,
+                "dists": dists,
+            }
+            pickle.dump(data_out, file_out)

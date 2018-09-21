@@ -6,3 +6,7 @@ model
 model_ranom
 model_random
 env_no_face
+logger.txt
+logger_cooked.pickle
+mass_point-learning_curve.png
+__pycache__
