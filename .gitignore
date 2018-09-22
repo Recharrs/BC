@@ -10,3 +10,6 @@ logger.txt
 logger_cooked.pickle
 mass_point-learning_curve.png
 __pycache__
+Asset
+.*.py
+*.pyc
