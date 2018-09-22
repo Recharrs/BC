@@ -15,3 +15,10 @@ traj
 reacher-learning_curve.png
 logger_2.txt logger.txt
 Asset
+logger.txt
+logger_cooked.pickle
+mass_point-learning_curve.png
+__pycache__
+Asset
+.*.py
+*.pyc
