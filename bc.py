@@ -36,7 +36,7 @@ with tf.Session(config=config) as sess:
     writer = tf.summary.FileWriter("Asset/logdir/%s" % name)
     saver = tf.train.Saver([v for v in tf.global_variables() if "model" in v.name], max_to_keep=10)
 
-    for i in range(1000):
+    for i in range(10000):
         # train a batch
         states, actions = get_batch(data, batch_size, i)
         loss, summary = model.train(states, actions)
@@ -46,18 +46,19 @@ with tf.Session(config=config) as sess:
 
         # evaluation
         dists = []
-        for _ in range(300):
-            obs = env.reset()
-            done = False
-            while not done:               
-                action = model.predict([obs])
-                obs, r, done, info = env.step(action[0][0])
-                if done:
-                    dists.append(info["dist"])
+        if i % 10 == 0:
+            for _ in range(100):
+                obs = env.reset()
+                done = False
+                while not done:               
+                    action = model.predict([obs])
+                    obs, r, done, info = env.step(action[0][0])
+                    if done:
+                        dists.append(info["dist"])
 
-        print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)))
-        data_size.append(batch_size * (i + 1))
-        all_dists.append(np.mean(dists))
+            print("data: %d , dist: %f" % (batch_size * (i + 1), np.mean(dists)))
+            data_size.append(batch_size * (i + 1))
+            all_dists.append(np.mean(dists))
 
 plt.xlabel("# of data")
 plt.ylabel("mean distance")
