@@ -59,9 +59,9 @@ with tf.Session(config=config) as sess:
                     obs, r, done, info = env.step(action[0][0])
                     if done: dists.append((info["done_status"] == args.success))
 
-            print("data: %d , success rate: %f %%" % (batch_size * (i + 1), np.sum(dists)) / args.num_eval * 100)
+            print("data: %d , success rate: %f %%" % (batch_size * (i + 1), int(np.sum(dists)) / args.num_eval * 100))
             data_size.append(batch_size * (i + 1))
-            all_dists.append(np.sum(dists) / args.num_eval * 100)
+            all_dists.append(int(np.sum(dists)) / args.num_eval * 100)
 
 plt.xlabel("# of data")
 plt.ylabel("mean distance")
