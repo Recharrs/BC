@@ -58,7 +58,7 @@ with tf.Session(config=config) as sess:
         data_train = data[:train_data_size*1000]
 
         # train
-        for i in range(len(data_train) // batch_size):
+        for i in range(len(data_train) // batch_size * 5):
             # batch
             states, actions = get_batch(data_train, batch_size, i)
             loss, summary = model.train(states, actions)
