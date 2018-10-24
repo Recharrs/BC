@@ -10,7 +10,7 @@ expert_name="MassPointGoal-v1"
 save_name="MassPointGoal-v1-plot3"
 type="goal"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --human_demo_size $human_demo_size --root $root_dir &
 done 
 wait %1 %2 %3 %4 %5
 
@@ -21,7 +21,7 @@ save_name="MassPointGoalInstr-v1-plot3"
 type="goal"
 model_path="MassPointGoal-v1-plot3"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
 done 
 wait %1 %2 %3 %4 %5
 
@@ -32,7 +32,7 @@ save_name="MassPointGoalAction-v1-plot3"
 type="goal"
 model_path="MassPointGoal-v1-plot3"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
 done 
 wait %1 %2 %3 %4 %5
 
@@ -42,7 +42,7 @@ expert_name="MassPointTraj-v1"
 save_name="MassPointTraj-v1-plot3"
 type="traj"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --human_demo_size $human_demo_size --root $root_dir &
 done
 wait %1 %2 %3 %4 %5
 
@@ -53,7 +53,7 @@ save_name="MassPointTrajInstr-v1-plot3"
 type="traj"
 model_path="MassPointTraj-v1-plot3"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
 done 
 wait %1 %2 %3 %4 %5
 
@@ -64,6 +64,6 @@ save_name="MassPointTrajAction-v1-plot3"
 type="traj"
 model_path="MassPointTraj-v1-plot3"
 for id in 00 01 02 03 04; do
-	python bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
+	python bc/bc_merge_3.py --env-id $env_id --expert-name $expert_name --save-name $save_name --random-seed $id --num-train $train --num-eval $eval_goal --type $type --model-path $model_path --human_demo_size $human_demo_size --root $root_dir &
 done 
 wait %1 %2 %3 %4 %5
